@@ -229,13 +229,17 @@ contract('TokenRules::registerRule', async () => {
             const aRuleAddress = accountProvider.get();
             const aRuleAbi = `Rule abi of ${aRuleName}`;
 
-            await tokenRules.registerRule(
+          let tx = await tokenRules.registerRule(
                 aRuleName,
                 aRuleAddress,
                 aRuleAbi,
                 { from: organizationWorker },
             );
 
+          utils.logReceipt(tx.receipt, "Register rule");
+          utils.printGasStatistics();
+          utils.clearReceipts();
+          
             const ruleIndexByAddress = await tokenRules.rulesByAddress.call(
                 aRuleAddress,
             );

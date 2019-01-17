@@ -20,7 +20,7 @@ const web3 = require('./web3.js');
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 const MAX_UINT256 = new BN(2).pow(new BN(256)).sub(new BN(1));
-
+let receipts = [];
 const generateExTxHash = (
     from, to, data, nonce, callPrefix,
 ) => web3.utils.soliditySha3(
@@ -160,4 +160,37 @@ module.exports = {
 
         return { exTxHash, exTxSignature };
     },
+  /** Log receipt. */
+  logReceipt: (receipt, description) => {
+    receipts.push({
+      receipt: receipt,
+      description: description,
+      response: null
+    })
+  },
+
+  /** Print gas statistics. */
+  printGasStatistics: () => {
+    var totalGasUsed = 0
+
+    console.log("      -----------------------------------------------------");
+    console.log("      Report gas usage\n");
+
+    for (i = 0; i < receipts.length; i++) {
+      const entry = receipts[i]
+
+      totalGasUsed += entry.receipt.gasUsed
+
+      console.log("      " + entry.description.padEnd(45) + entry.receipt.gasUsed)
+    }
+
+    console.log("      -----------------------------------------------------")
+    console.log("      " + "Total gas logged: ".padEnd(45) + totalGasUsed + "\n")
+  },
+
+  /** Clear receipt. */
+  clearReceipts: () => {
+    receipts.splice(0, receipts.length);
+  },
+
 };

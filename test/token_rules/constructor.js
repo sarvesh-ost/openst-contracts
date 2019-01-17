@@ -50,7 +50,10 @@ contract('TokenRules::constructor', async () => {
             const token = accountProvider.get();
 
             const tokenRules = await TokenRules.new(organization.address, token);
-
+          let receipt = await web3.eth.getTransactionReceipt(tokenRules.transactionHash);
+          utils.logReceipt(receipt, "tokenRules deployment");
+          utils.printGasStatistics();
+          utils.clearReceipts();
             assert.strictEqual(
                 await tokenRules.token.call(),
                 token,
